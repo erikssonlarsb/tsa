@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="tsa">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TSA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body ng-cloak ng-controller="AppController">
+    <md-content layout-padding>
+        <md-input-container class="md-block">
+            <label>Data URL</label>
+            <md-select ng-model="dataUrl" placeholder="Select data source" required>
+                <md-option ng-value="opt" ng-repeat="opt in urls">{{opt}}</md-option>
+            </md-select>
+        </md-input-container>
+        <div>
+            <md-button class="md-raised md-primary" type="button" ng-click="load()">Load</md-button>
+        </div>
+    </md-content>
+
+    <div ng-show="data">
+        <canvas
+            id="line" class="chart chart-line" chart-data="data.values"
+            chart-labels="data.dates" chart-series="series">
+        </canvas>
+
+        <div ng-repeat="serie in data.values">
+            <h3> Serie {{data.series[$index]}}</h3>
+            <md-content layout-padding layout="row">
+                <md-input-container>
+                    <md-select ng-model="data.models[$index]" placeholder="Select model">
+                        <md-option ng-value="opt" ng-repeat="opt in models">{{ opt }}</md-option>
+                    </md-select>
+                </md-input-container>
+                <div ng-show="['range'].indexOf(data.models[$index])>-1">
+                    <md-input-container>
+                        <label>Min</label>
+                        <input ng-model="data.parameters[$index]['min']">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>Max</label>
+                        <input ng-model="data.parameters[$index]['max']">
+                    </md-input-container>
+                </div>
+                <div ng-show="['avgDev', 'mAvgDev'].indexOf(data.models[$index])>-1">
+                    <md-input-container>
+                        <label>Threshold</label>
+                        <input ng-model="data.parameters[$index]['threshold']">
+                    </md-input-container>
+                </div>
+                <div>
+                    <md-button class="md-raised md-primary" type="button" ng-click="setModel($index, data.models[$index], data.parameters[$index])">Analyse</md-button>
+                </div>
+            </md-content>
+            <canvas
+                id="line" class="chart chart-line" chart-data="[serie, data.analysis[$index]]"
+                chart-labels="data.dates" chart-series="[series[$index], ' *']"
+                chart-dataset-override="datasetOverride">
+            </canvas>
+        </div>
+    </div>
+
+
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script src="node_modules/angular-aria/angular-aria.min.js"></script>
+    <script src="node_modules/angular-messages/angular-messages.min.js"></script>
+    <script src="node_modules/angular-material/angular-material.min.js"></script>
+    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    <script src="node_modules/angular-chart.js/dist/angular-chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
