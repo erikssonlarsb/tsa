@@ -22,9 +22,10 @@
     </md-content>
 
     <div ng-show="data">
+        <h3> Overview</h3>
         <canvas
-            id="line" class="chart chart-line" chart-data="data.values"
-            chart-labels="data.dates" chart-series="series">
+            id="line" class="chart chart-line" chart-data="data.values" 
+            chart-labels="data.dates" chart-series="data.series" chart-options="optionsOverview">
         </canvas>
 
         <div ng-repeat="serie in data.values">
@@ -32,23 +33,30 @@
             <md-content layout-padding layout="row">
                 <md-input-container>
                     <md-select ng-model="data.models[$index]" placeholder="Select model">
-                        <md-option ng-value="opt" ng-repeat="opt in models">{{ opt }}</md-option>
+                        <md-option ng-value="opt" ng-repeat="opt in models">{{ opt }}
+                        </md-option>
                     </md-select>
                 </md-input-container>
                 <div ng-show="['range'].indexOf(data.models[$index])>-1">
                     <md-input-container>
-                        <label>Min</label>
+                        <label>Min value</label>
                         <input ng-model="data.parameters[$index]['min']">
                     </md-input-container>
                     <md-input-container>
-                        <label>Max</label>
+                        <label>Max value</label>
                         <input ng-model="data.parameters[$index]['max']">
                     </md-input-container>
                 </div>
                 <div ng-show="['avgDev', 'mAvgDev'].indexOf(data.models[$index])>-1">
                     <md-input-container>
-                        <label>Threshold</label>
+                        <label>Max % deviation</label>
                         <input ng-model="data.parameters[$index]['threshold']">
+                    </md-input-container>
+                </div>
+                <div ng-show="['custom'].indexOf(data.models[$index])>-1">
+                    <md-input-container>
+                        <label>Custom condition</label>
+                        <input ng-model="data.parameters[$index]['formula']">
                     </md-input-container>
                 </div>
                 <div>
@@ -57,8 +65,8 @@
             </md-content>
             <canvas
                 id="line" class="chart chart-line" chart-data="[serie, data.analysis[$index]]"
-                chart-labels="data.dates" chart-series="[series[$index], ' *']"
-                chart-dataset-override="datasetOverride">
+                chart-labels="data.dates"  chart-series="[data.series[$index], ' *']"
+                chart-dataset-override="datasetOverride" chart-options="optionsDetails">
             </canvas>
         </div>
     </div>
